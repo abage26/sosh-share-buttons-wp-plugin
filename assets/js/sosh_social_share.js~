@@ -1,0 +1,7 @@
+jQuery(function ($) {
+    $('.sosh-network-btn').click(function () {
+        var ID = $(this).attr('data-ID');
+
+        $.ajax()
+    });
+});
