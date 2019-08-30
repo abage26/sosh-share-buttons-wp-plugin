@@ -76,30 +76,10 @@ class Social_share
         $url = ( has_post_thumbnail($post->ID) ? get_the_post_thumbnail_url($post->ID) : '' );
         $title = (isset($social_share_options['share_title']) && is_string($social_share_options['share_title'])) ? $social_share_options['share_title'] : 'Share';
 
-             echo '<div class="soshmodal soshfade " id="sosh_btns_modal" tabindex="-1" role="dialog" aria-labelledby="sosh_btns_modal_label" aria-hidden="true">
-                
-                <div class="soshmodal-dialog">
-                    <div class="soshmodal-content" style="background-image: url('.$url.');">
-                        <div class="soshmodal-header">
-                            <button type="button" class="sosh-close" data-dismiss="soshmodal"><span aria-hidden="true">&times;</span><span class="sosh-sr-only">Close</span></button>
-                            <h4 class="soshmodal-title" id="sosh_btns_modal_label" style="background: rgba(255,255,255,0.2)">Partager</h4>
-                        </div>
-                        <div class="soshmodal-body">
+        self::sosh_modal(['title' => 'Partager','body' => $this->get_share_block_html(["share_title" => false]),'bg_img_url' => $url]);
 
-                        '.$this->get_share_block_html(["share_title" => false]).'
-
-                        </div>
-                        <div class="soshmodal-footer">
-                            <button type="button" class="soshbtn soshbtn-default" data-dismiss="soshmodal">Close</button>
-                            <!--<button type="button" class="btn btn-primary" id="dont_show_again">Don\'t Show Again</button>-->
-                        </div>
-                    </div>
-                </div>
-             </div>';
-
-             echo "<script>\n
-                    
-// Counter
+        echo "<script>    
+/* Counter */
 jQuery(function($) {
   
     jQuery.sharedCount = function(url, fn) {
@@ -136,11 +116,45 @@ jQuery(function($) {
         var count = 0;
         count = fb+gp+pr+li;
         $('.sosh-total-share-count').html(count);
-    }
-    );
+    });
 
 });
                 </script>";
+    }
+
+    /**
+* @param array $params
+ */
+    public static function sosh_modal($params = []) {
+        if (empty($params))return;
+
+        $title = (isset($params['title']) ? $params['title'] : '');
+        $body = (isset($params['body']) ? $params['body'] : '');
+        $footer = (isset($params['footer']) ? $params['footer'] : '');
+        $bg_img_url = (isset($params['bg_img_url']) ? $params['bg_img_url'] : '');
+
+        ob_start()?>
+            <div class="soshmodal soshfade " id="sosh_btns_modal" tabindex="-1" role="dialog" aria-labelledby="sosh_btns_modal_label" aria-hidden="true">
+
+                <div class="soshmodal-dialog">
+                    <div class="soshmodal-content" <?= (!empty($bg_img_url) ? 'style="background-image: url('.$bg_img_url.');"' : "" )?>>
+                        <div class="soshmodal-header">
+                            <button type="button" class="sosh-close" data-dismiss="soshmodal"><span aria-hidden="true">&times;</span><span class="sosh-sr-only">Close</span></button>
+                            <h4 class="soshmodal-title" id="sosh_btns_modal_label" style="background: rgba(255,255,255,0.2)"><?= (!empty($title) ? $title : '') ?></h4>
+                        </div>
+
+                            <?= (!empty($body) ? '<div class="soshmodal-body">'.$body.'</div>' : '') ?>
+
+                        <div class="soshmodal-footer">
+
+                            <?= (!empty($footer) ? $footer : '<button type="button" class="soshbtn soshbtn-default" data-dismiss="soshmodal">Fermer</button>' ) ?>
+                            <!--<button type="button" class="btn btn-primary" id="dont_show_again">Don\'t Show Again</button>-->
+                        </div>
+                    </div>
+                </div></div>
+        <?php $html = ob_get_clean();
+        echo $html;
+
     }
 
     public function create_admin_page() {
@@ -387,6 +401,7 @@ jQuery(function($) {
     }
 
     public function sosh_admin_scripts($hook) {
+
         if(!in_array($hook,['toplevel_page_social-share','plugins.php'])) {
             return;
         }
@@ -401,6 +416,14 @@ jQuery(function($) {
         endif;
     }
 
+    public function wp_admin_scripts($hook){
+        $method = 'admin_page_'.strtr($hook,['.php'=>""]);
+        if (!method_exists(__CLASS__,$method))
+            return;
+        //self::$method();
+
+        add_action('admin_footer-'.$hook, [$this,$method]);
+    }
 
     static function social_share_install(){
         $social_share_options['share_title'] = 'Share';

@@ -20,7 +20,3 @@ include_once( _PLUGIN_DIR . 'sosh.class.php' );
 new Social_share();
 
 register_activation_hook(__FILE__, ['Social_share','social_share_install']);
-
-    //register_deactivation_hook(__FILE__, ['Social_share','social_share_uninstall']);
-
-
