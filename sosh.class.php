@@ -92,7 +92,7 @@ jQuery(function($) {
                 apikey : apikey
             },
             url: domain,
-            cache: true,
+            cache: false,
             dataType: \"json\"
         };
         if ('withCredentials' in new XMLHttpRequest) {
