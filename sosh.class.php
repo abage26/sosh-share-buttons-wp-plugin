@@ -79,7 +79,7 @@ class Social_share
         self::sosh_modal(['title' => 'Partager','body' => $this->get_share_block_html(["share_title" => false]),'bg_img_url' => $url]);
 
         echo "<script>    
-/* Counter */
+/* Counter 
 jQuery(function($) {
   
     jQuery.sharedCount = function(url, fn) {
@@ -107,7 +107,7 @@ jQuery(function($) {
         return jQuery.ajax(arg);
     };
 
-    var f = $.sharedCount('".get_current_page_url()."',function(response){
+    var f = $.sharedCount('',function(response){
         
         var fb = response['Facebook']['total_count'],
             gp = response['GooglePlusOne'],
@@ -118,7 +118,7 @@ jQuery(function($) {
         $('.sosh-total-share-count').html(count);
     });
 
-});
+});*/
                 </script>";
     }
 
@@ -303,6 +303,8 @@ jQuery(function($) {
 
         add_filter('wp_footer',[$this,'add_sosh_btns_modal_to_footer']);
 
+        $share_count = $this->get_share_count(array_keys($btns));
+
         ob_start();
         ?>
 
@@ -329,10 +331,12 @@ jQuery(function($) {
 
                 </ul>
 
+                <?php if (is_int($share_count)): ?>
                 <div class="sosh-total-share-wrapper">
-                    <span class="sosh-icon-total-share"></span><span class="sosh-total-share-count">0</span>
+                    <span class="sosh-icon-total-share"></span><span class="sosh-total-share-count"><?= $share_count ?></span>
                     <span>Partages</span>
                 </div>
+                <?php endif; ?>
 
             </div>
         </div>
@@ -340,6 +344,78 @@ jQuery(function($) {
         <?php
 
         return ob_get_clean();
+    }
+
+    /**
+* @param string|array $networks
+ */
+    private function get_share_count($networks = ''){
+
+        if (empty($networks) || !(is_array($networks) || is_string($networks)))
+            return;
+
+        $count = 0;
+
+        if (is_string($networks))
+            $networks[] = $networks;
+
+        if (in_array('facebook',$networks)){
+            $api_data_to_array = json_decode(wp_remote_retrieve_body( wp_remote_get('https://graph.facebook.com/?id='.get_current_page_url().'&fields=engagement&access_token=396658254327661|8X2n8SLeFtvsOkY8hCrzMPbgpQY')),true);
+
+            $count+= (int)$api_data_to_array['engagement']['share_count'];
+        }
+
+        if (in_array('pinterest',$networks)){
+            $api_data = wp_remote_retrieve_body( wp_remote_get('https://api.pinterest.com/v1/urls/count.json?callback=receiveCount&url='.get_current_page_url()));
+            $data_to_json = strtr($api_data,['receiveCount({' => '{', '})' => '}']);
+            $data_to_obj = json_decode($data_to_json);
+
+            $count+= (int)$data_to_obj->count;
+        }
+
+        if (in_array('googleplus',$networks)){
+            ?>
+            <script>
+            jQuery(function($) {
+
+    var uri = '<?= get_current_page_url() ?>'
+    $.ajax({
+        type: 'POST',
+        url: 'https://clients6.google.com/rpc',
+        processData: true,
+        contentType: 'application/json',
+        data: JSON.stringify({
+            'method': 'pos.plusones.get',
+            'id': uri,
+            'params': {
+                'nolog': true,
+                'id': uri,
+                'source': 'widget',
+                'userId': '@viewer',
+                'groupId': '@self'
+            },
+            'jsonrpc': '2.0',
+            'key': 'p',
+            'apiVersion': 'v1'
+        }),
+        success: function(response) {
+            $.post({
+                url:"",
+                data:{'googleplus_share_count':response.result.metadata.globalCounts.count},
+                success:function(res) {
+                    var count = $('.sosh-total-share-count').html();
+                    count = parseInt(count) + parseInt(response.result.metadata.globalCounts.count);
+                }
+            })
+        }
+    });
+            })
+
+</script>
+            <?php
+        }
+
+        return $count;
     }
 
     private function get_social_share_btns(){
