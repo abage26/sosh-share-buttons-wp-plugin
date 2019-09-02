@@ -147,7 +147,7 @@ jQuery(function($) {
 
                         <div class="soshmodal-footer">
 
-                            <?= (!empty($footer) ? $footer : '<button type="button" class="soshbtn soshbtn-default" data-dismiss="soshmodal">Fermer</button>' ) ?>
+                            <?= (!empty($footer) ? $footer : '<button type="button" class="soshbtn soshbtn-xs soshbtn-default" data-dismiss="soshmodal">Fermer</button>' ) ?>
                             <!--<button type="button" class="btn btn-primary" id="dont_show_again">Don\'t Show Again</button>-->
                         </div>
                     </div>
@@ -374,7 +374,7 @@ jQuery(function($) {
         }
 
         if (in_array('googleplus',$networks)){
-            ?>
+            /*?>
             <script>
             jQuery(function($) {
 
@@ -406,13 +406,13 @@ jQuery(function($) {
                     var count = $('.sosh-total-share-count').html();
                     count = parseInt(count) + parseInt(response.result.metadata.globalCounts.count);
                 }
-            })
+            });
         }
     });
-            })
+            });
 
 </script>
-            <?php
+            <?php*/
         }
 
         return $count;
