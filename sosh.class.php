@@ -206,7 +206,7 @@ jQuery(function($) {
             <h2>Share Buttons:</h2>
             <p class="checklist" id="sosh_btns_checklist">
             <label class="">
-                <input type="checkbox" id="sosh_btns_checkAll">Tout
+                <input type="checkbox" id="sosh_btns_checkAll">All
             </label>
                 <?php foreach ($share_btns as $key => $share_btn) { ?>
 
@@ -225,7 +225,7 @@ jQuery(function($) {
             <h2>Share Pages:</h2>
             <p class="checklist" id="sosh_pages_checklist">
             <label class="">
-                <input type="checkbox" id="sosh_pages_checkAll">Tout
+                <input type="checkbox" id="sosh_pages_checkAll">All
             </label>
                 <?php foreach ($post_types as $key => $post_type) { ?>
 
@@ -246,7 +246,7 @@ jQuery(function($) {
 
                     <label><?= $display ?>
 
-                        <select name="<?=  SOSH_OPTIONS_NAME."[displays][$display]" ?>">
+                        <select name="<?= SOSH_OPTIONS_NAME."[displays][$display]" ?>">
 
                             <?php foreach ($positions as $key => $position): ?>
 

@@ -5,7 +5,7 @@ jQuery(function($){
         e.preventDefault();
         var urlRedirect = $('[data-slug="social-share"] span[class="deactivate"] a').attr('href');
 
-        if (confirm('Les données sauvégardées seront supprimées. Appuyer "Cancel" pour conserver. ')) {
+        if (confirm('The saved data will be deleted. Press "Cancel" to keep.')) {
             removeData();
         }
         else{
@@ -28,38 +28,4 @@ jQuery(function($){
         });
         window.location.href = $('[data-slug="social-share"] span[class="deactivate"] a').attr('href');
     };
-    /*$('<div></div>').appendTo('body')
-        .html('<div><h6>Yes or No?</h6></div>')
-        .dialog({
-            modal: true,
-            title: 'message',
-            zIndex: 10000,
-            autoOpen: true,
-            width: 'auto',
-            resizable: false,
-            buttons: {
-                Yes: function () {
-                    doFunctionForYes();
-                    $(this).dialog("close");
-                },
-                No: function () {
-                    doFunctionForNo();
-                    $(this).dialog("close");
-                }
-            },
-            close: function (event, ui) {
-                $(this).remove();
-            }
-        });
-    $('#msg').hide();
-
-    function doFunctionForYes() {
-        alert("Yes");
-        $('#msg').show();
-    }
-
-    function doFunctionForNo() {
-        alert("No");
-        $('#msg').show();
-    }*/
 });
