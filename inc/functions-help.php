@@ -33,9 +33,9 @@ function ajax_modal(){
     wp_die();
 }
 
-add_action( 'wp_ajax_sosh_uninstal_action', 'sosh_uninstal' );
-add_action( 'wp_ajax_nopriv_sosh_uninstal_action', 'sosh_uninstal' );
-function sosh_uninstal(){
+add_action( 'wp_ajax_sosh_uninstal_action', 'ajax_sosh_uninstal' );
+add_action( 'wp_ajax_nopriv_sosh_uninstal_action', 'ajax_sosh_uninstal' );
+function ajax_sosh_uninstal(){
 
     if (isset($_POST['sosh_deactivate_remove_data']) && $_POST['sosh_deactivate_remove_data'])
         delete_option( SOSH_OPTIONS_NAME );
