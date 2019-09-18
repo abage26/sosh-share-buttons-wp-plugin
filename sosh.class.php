@@ -3,12 +3,20 @@
 class Social_share
 {
 
+    private static $plugin_data;
+
+
     public function __construct()
     {
         $this->init();
     }
 
     private function init(){
+        //Get Plugin Data
+        if ( ! function_exists( 'get_plugin_data' ) ) {
+            require( ABSPATH . 'wp-admin/includes/plugin.php' );
+        }
+        self::$plugin_data = get_plugin_data(SOSH_PLUGIN_FILE);
 
         // Hooks
         add_filter('the_content', array($this, "add_icon_to_content"), 1);
@@ -78,48 +86,6 @@ class Social_share
 
         self::sosh_modal(['title' => 'Partager','body' => $this->get_share_block_html(["share_title" => false]),'bg_img_url' => $url]);
 
-        echo "<script>    
-/* Counter 
-jQuery(function($) {
-  
-    jQuery.sharedCount = function(url, fn) {
-        url = encodeURIComponent(url || location.href);
-        var domain = \"//api.sharedcount.com/v1.0/\";
-        var apikey = \"37c5aae52cbb76a7c3e2ac58dffee2528f55af76\"
-        var arg = {
-            data: {
-                url : url,
-                apikey : apikey
-            },
-            url: domain,
-            cache: false,
-            dataType: \"json\"
-        };
-        if ('withCredentials' in new XMLHttpRequest) {
-            arg.success = fn;
-        }
-        else {
-            var cb = \"sc_\" + url.replace(/\W/g, '');
-            window[cb] = fn;
-            arg.jsonpCallback = cb;
-            arg.dataType += \"p\";
-        }
-        return jQuery.ajax(arg);
-    };
-
-    var f = $.sharedCount('',function(response){
-        
-        var fb = response['Facebook']['total_count'],
-            gp = response['GooglePlusOne'],
-            pr = response['Pinterest'],
-            li = response['LinkedIn'];
-        var count = 0;
-        count = fb+gp+pr+li;
-        $('.sosh-total-share-count').html(count);
-    });
-
-});*/
-                </script>";
     }
 
     /**
@@ -446,7 +412,6 @@ jQuery(function($) {
         );
 
         foreach ($files_array as $key => $file) {
-            //wp_register_script($key, $file . "?ver=" . $ver, array('jquery'), '', true);
             wp_register_script($key, $file ,['jquery'],null,true);
             wp_enqueue_script($key);
         }
@@ -502,6 +467,7 @@ jQuery(function($) {
     }
 
     static function social_share_install(){
+        $social_share_options['sosh_version'] = self::$plugin_data['Version'];
         $social_share_options['share_title'] = 'Share';
         $social_share_options['share_btns'] = ['facebook','twitter','whatsapp'];
         $social_share_options['post_types'] = ['post'];

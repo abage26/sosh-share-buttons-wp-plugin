@@ -12,6 +12,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 //session_unset();
+define('SOSH_PLUGIN_FILE', __FILE__ );
 define('_PLUGIN_DIR', plugin_dir_path(__FILE__) );
 define('_PLUGIN_DIR_URL', plugin_dir_url( __FILE__ ) );
 define('SOSH_OPTIONS_NAME', 'social_share_options_arth' );
