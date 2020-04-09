@@ -1,7 +1,7 @@
-# SOSH WP SOCIAL SHARE
+# SOSH SHARE BUTTONS
 
 ## Description
-SOSH WP SOCIAL SHARE is a wordpress plugin that adds to pages, share buttons for social networks.
+SOSH SHARE BUTTONS is a wordpress plugin that adds to pages, share buttons for social networks.
 
 ## Features
 Add to some pages of your choice the buttons of social networks.
