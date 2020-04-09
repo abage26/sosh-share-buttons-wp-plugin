@@ -1,5 +1,7 @@
 # SOSH SHARE BUTTONS
 
+License: GPLv2 or later
+
 ## Description
 SOSH SHARE BUTTONS is a wordpress plugin that adds to pages, share buttons for social networks.
 
