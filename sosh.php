@@ -5,7 +5,7 @@
  * Description: Social sharing buttons plugin for <strong>sharing an article or a page on social networks.</strong>
  * Version: 1.0.0
  * Requires at least: 5.4
- * Requires PHP: 5.4.0
+ * Requires PHP: 7.0
  * Author: abage26
  * Author URI: https://github.com/abage26
  * License: GPLv2 or later
