@@ -347,7 +347,7 @@ class Sosh_share_buttons
             $data_to_json = strtr($api_data,['receiveCount({' => '{', '})' => '}']);
             $data_to_obj = json_decode($data_to_json);
 
-            $count+= (int)$data_to_obj->count;
+            $count+= !empty($data_to_obj) ? (int)$data_to_obj->count : 0;
         }
 
         if (in_array('googleplus',$networks)){
