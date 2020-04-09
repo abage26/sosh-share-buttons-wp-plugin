@@ -1,6 +1,6 @@
 <?php
 
-class Social_share
+class Sosh_share_buttons
 {
 
     private static $plugin_data;
@@ -84,7 +84,7 @@ class Social_share
         $url = ( has_post_thumbnail($post->ID) ? get_the_post_thumbnail_url($post->ID) : '' );
         $title = (isset($social_share_options['share_title']) && is_string($social_share_options['share_title'])) ? $social_share_options['share_title'] : 'Share';
 
-        self::sosh_modal(['title' => 'Partager','body' => $this->get_share_block_html(["share_title" => false]),'bg_img_url' => $url]);
+        self::sosh_modal(['title' => 'Sharing','body' => $this->get_share_block_html(["share_title" => false]),'bg_img_url' => $url]);
 
     }
 
@@ -113,7 +113,7 @@ class Social_share
 
                         <div class="soshmodal-footer">
 
-                            <?= (!empty($footer) ? $footer : '<button type="button" class="soshbtn soshbtn-xs soshbtn-default" data-dismiss="soshmodal">Fermer</button>' ) ?>
+                            <?= (!empty($footer) ? $footer : '<button type="button" class="soshbtn soshbtn-xs soshbtn-default" data-dismiss="soshmodal">Close</button>' ) ?>
                             <!--<button type="button" class="btn btn-primary" id="dont_show_again">Don\'t Show Again</button>-->
                         </div>
                     </div>
@@ -125,13 +125,14 @@ class Social_share
 
     public function create_admin_page() {
 
-        add_menu_page( 'Social share', 'Social share', 'manage_options', 'social-share', array($this, 'admin_page_content'), "dashicons-share", 100 );
+        add_menu_page( 'SOSH Share Buttons: Options', 'SOSH', 'manage_options', 'sosh-social-share', array($this, 'admin_page_content'), "dashicons-share", 100 );
 
     }
 
     public function admin_page_content(){
 
         if(isset($_POST[SOSH_OPTIONS_NAME])){
+
             $update = update_option(SOSH_OPTIONS_NAME, $_POST[SOSH_OPTIONS_NAME]);
 
             if (isset($update)): ?>
@@ -145,7 +146,7 @@ class Social_share
 
         <div class="wrap">
 
-        <h1>Share Button config page</h1>
+        <h1>SOSH share buttons - Options Page</h1>
 
         <form method="POST">
 
@@ -227,13 +228,23 @@ class Social_share
                 <?php } ?>
             </p>
 
+            <h2>Modal:</h2>
+            <p>
+                    <label>Activate
+                        <input type="radio" name="sosh_modal" checked>
+                    </label>
+                    <!--<label>Deactivate
+                        <input type="radio" name="sosh_modal">
+                    </label>-->
+            </p>
+
             <?php submit_button(); ?>
 
         </form>
 
         <?php
 
-        //vdump_pre(get_option(SOSH_OPTIONS_NAME));
+        //sosh_vdump_pre(get_option(SOSH_OPTIONS_NAME));
     }
 
     /**
@@ -300,7 +311,7 @@ class Social_share
                 <?php if (is_int($share_count)): ?>
                 <div class="sosh-total-share-wrapper">
                     <span class="sosh-icon-total-share"></span><span class="sosh-total-share-count"><?= $share_count ?></span>
-                    <span>Partages</span>
+                    <span>Shares</span>
                 </div>
                 <?php endif; ?>
 
@@ -403,7 +414,7 @@ class Social_share
     }
 
     public function enqueue_sosh_script_files() {
-        $path = _PLUGIN_DIR_URL.'assets/';
+        $path = SOSH_PLUGIN_DIR_URL.'assets/';
         $social_share_btns = $this->get_social_share_btns();
 
         $files_array = array(
@@ -429,7 +440,7 @@ class Social_share
     }
 
     public function enqueue_sosh_css_files() {
-        $path = _PLUGIN_DIR_URL.'assets/';
+        $path = SOSH_PLUGIN_DIR_URL.'assets/';
         $files_array = array(
             "sosh-bootstrap-modal-css" => $path . 'css/soshmodal.min.css',
             "sosh-style-css" => $path . 'css/sosh-style.css',
@@ -466,7 +477,7 @@ class Social_share
         add_action('admin_footer-'.$hook, [$this,$method]);
     }
 
-    static function social_share_install(){
+    static function sosh_share_buttons_install(){
         $social_share_options['sosh_version'] = self::$plugin_data['Version'];
         $social_share_options['share_title'] = 'Share';
         $social_share_options['share_btns'] = ['facebook','twitter','whatsapp'];
@@ -478,7 +489,7 @@ class Social_share
         }
     }
 
-    static function social_share_uninstall(){
+    static function sosh_share_button_uninstall(){
     }
 }
 ?>

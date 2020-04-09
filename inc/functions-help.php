@@ -1,6 +1,6 @@
 <?php
 
-function vdump_pre($data = ''){
+function sosh_vdump_pre($data = ''){
     echo '<pre>';
     var_dump($data);
     echo '</pre>';
