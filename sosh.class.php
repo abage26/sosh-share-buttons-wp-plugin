@@ -133,7 +133,7 @@ class Sosh_share_buttons
 
         if(isset($_POST[SOSH_OPTIONS_NAME])){
 
-            $update = update_option(SOSH_OPTIONS_NAME, $_POST[SOSH_OPTIONS_NAME]);
+            $update = update_option(SOSH_OPTIONS_NAME, sanitize_text_field($_POST[SOSH_OPTIONS_NAME]));
 
             if (isset($update)): ?>
                 <div class="notice notice-<?php echo ($update) ? 'success' : 'error' ?> is-dismissible">
