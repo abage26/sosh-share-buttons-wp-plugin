@@ -1,12 +1,11 @@
 <?php
 /**
- * Plugin Name: SOSH Share Buttons
+ * Plugin Name: Sosh Share Buttons
  * Plugin URI: #https://github.com/abage26/wp_sosh_plugin
  * Description: Social sharing buttons plugin for <strong>sharing an article or a page on social networks.</strong>
- * Version: 1.0.0
- * Requires at least: 5.4
+ * Version: 1.1.0
  * Requires PHP: 7.0
- * Author: abage26
+ * Author: Arthura
  * Author URI: https://github.com/abage26
  * License: GPLv2 or later
  * Text Domain: sosh-share-buttons
@@ -22,7 +21,7 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-//session_unset();
+session_unset();
 define('SOSH_PLUGIN_FILE', __FILE__ );
 define('SOSH_PLUGIN_DIR', plugin_dir_path(__FILE__) );
 define('SOSH_PLUGIN_DIR_URL', plugin_dir_url( __FILE__ ) );

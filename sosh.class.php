@@ -128,16 +128,30 @@ class Sosh_share_buttons
         add_menu_page( 'SOSH Share Buttons: Options', 'SOSH', 'manage_options', 'sosh-social-share', array($this, 'admin_page_content'), "dashicons-share", 100 );
 
     }
-
+    private static function sanitize_array_fields($array = []){
+        if (!empty($array))
+        foreach ($array as $k => $v){
+            $array[sanitize_text_field($k)] = sanitize_text_field($v);
+        }
+        return $array;
+    }
     public function admin_page_content(){
 
         if(isset($_POST[SOSH_OPTIONS_NAME])){
 
-            $update = update_option(SOSH_OPTIONS_NAME,sanitize_text_field($_POST[SOSH_OPTIONS_NAME]));
+            $post_data = $_POST[SOSH_OPTIONS_NAME];
+
+            $to_save_data['sosh_version'] = self::$plugin_data['Version'];
+            $to_save_data['share_title'] = (isset($post_data['share_title']) and is_string($post_data['share_title'])) ? sanitize_text_field($post_data['share_title']) : '';
+            $to_save_data['share_btns'] = (isset($post_data['share_btns']) and is_array($post_data['share_btns'])) ? self::sanitize_array_fields($post_data['share_btns']) : [];
+            $to_save_data['post_types'] = (isset($post_data['post_types']) and is_array($post_data['post_types'])) ? self::sanitize_array_fields($post_data['post_types']) : [];
+            $to_save_data['displays'] = (isset($post_data['displays']) and is_array($post_data['displays'])) ? self::sanitize_array_fields($post_data['displays']) : [];
+
+            $update = update_option(SOSH_OPTIONS_NAME,$to_save_data);
 
             if (isset($update)): ?>
-                <div class="notice notice-<?php echo ($update) ? 'success' : 'error' ?> is-dismissible">
-                    <p> <strong><?php echo ($update) ? 'Mise à jour réussie' : 'Aucune mise à jour' ?> </strong>.</p>
+                <div class="notice notice-<?php echo ($update) ? 'success' : 'warning' ?> is-dismissible">
+                    <p> <strong><?php echo ($update) ? 'Saved' : 'Already saved' ?> </strong></p>
                     <button type="button" class="notice-dismiss"><span class="screen-reader-text">Dismiss this notice.</span></button>
                 </div>
             <?php endif;
@@ -172,16 +186,16 @@ class Sosh_share_buttons
 
             <h2>Share Buttons:</h2>
             <p class="checklist" id="sosh_btns_checklist">
-            <label class="">
+            <!--<label class="">
                 <input type="checkbox" id="sosh_btns_checkAll">All
-            </label>
+            </label>-->
                 <?php foreach ($share_btns as $key => $share_btn) { ?>
 
                     <label class="">
 
                         <input type="checkbox" value="<?php echo $key; ?>" name="<?= SOSH_OPTIONS_NAME.'[share_btns][]' ?>" <?php echo (is_array($social_share_options) && isset($social_share_options['share_btns']) && is_array($social_share_options['share_btns']) && in_array($key, $social_share_options['share_btns'])) ? "checked" : "" ?> >
 
-                        <span><?php echo $key; ?></span>
+                        <span><?php echo ucfirst($key); ?></span>
 
                     </label>
 
@@ -191,16 +205,16 @@ class Sosh_share_buttons
 
             <h2>Share Pages:</h2>
             <p class="checklist" id="sosh_pages_checklist">
-            <label class="">
+            <!--<label class="">
                 <input type="checkbox" id="sosh_pages_checkAll">All
-            </label>
+            </label>-->
                 <?php foreach ($post_types as $key => $post_type) { ?>
 
                     <label class="">
 
                         <input type="checkbox" value="<?php echo $key; ?>" name="<?= SOSH_OPTIONS_NAME.'[post_types][]' ?>" <?php echo (is_array($social_share_options) && isset($social_share_options['post_types']) && is_array($social_share_options['post_types']) && in_array($key, $social_share_options['post_types']))?"checked":"" ?> >
 
-                        <span><?php echo $key; ?></span>
+                        <span><?php echo ucfirst($key); ?></span>
 
                     </label>
 
@@ -211,7 +225,7 @@ class Sosh_share_buttons
             <p>
                 <?php foreach ($displays as $display => $positions) { ?>
 
-                    <label><?= $display ?>
+                    <label><?= ucfirst($display) ?>
 
                         <select name="<?= SOSH_OPTIONS_NAME."[displays][$display]" ?>">
 
@@ -228,7 +242,7 @@ class Sosh_share_buttons
                 <?php } ?>
             </p>
 
-            <h2>Modal:</h2>
+            <h2 data-toggle="tooltip" data-placement="top" title="A modal containing the share buttons is displayed once per session when scrolling at the bottom of the page.">Modal: </h2>
             <p>
                     <label>Activate
                         <input type="radio" name="sosh_modal" checked>
@@ -337,13 +351,13 @@ class Sosh_share_buttons
             $networks[] = $networks;
 
         if (in_array('facebook',$networks)){
-            $api_data_to_array = json_decode(wp_remote_retrieve_body( wp_remote_get('https://graph.facebook.com/?id='.get_current_page_url().'&fields=engagement&access_token=396658254327661|8X2n8SLeFtvsOkY8hCrzMPbgpQY')),true);
+            $api_data_to_array = json_decode(wp_remote_retrieve_body( wp_remote_get('https://graph.facebook.com/?id='.sosh_get_current_page_url().'&fields=engagement&access_token=396658254327661|8X2n8SLeFtvsOkY8hCrzMPbgpQY')),true);
 
             $count+= (int)$api_data_to_array['engagement']['share_count'];
         }
 
         if (in_array('pinterest',$networks)){
-            $api_data = wp_remote_retrieve_body( wp_remote_get('https://api.pinterest.com/v1/urls/count.json?callback=receiveCount&url='.get_current_page_url()));
+            $api_data = wp_remote_retrieve_body( wp_remote_get('https://api.pinterest.com/v1/urls/count.json?callback=receiveCount&url='.sosh_get_current_page_url()));
             $data_to_json = strtr($api_data,['receiveCount({' => '{', '})' => '}']);
             $data_to_obj = json_decode($data_to_json);
 
@@ -355,7 +369,7 @@ class Sosh_share_buttons
             <script>
             jQuery(function($) {
 
-    var uri = '<?= get_current_page_url() ?>'
+    var uri = '<?= sosh_get_current_page_url() ?>'
     $.ajax({
         type: 'POST',
         url: 'https://clients6.google.com/rpc',
@@ -399,7 +413,7 @@ class Sosh_share_buttons
         global $post;
 
         $post_title = ( !is_admin() ? get_the_title($post->ID) : '');
-        $post_url = ( !is_admin() ? urlencode(get_current_page_url()) : '');
+        $post_url = ( !is_admin() ? urlencode(sosh_get_current_page_url()) : '');
 
         $share_btns = [
             'facebook' => ['name' => 'Partager', 'enabled' => true, 'url' => 'https://facebook.com/sharer/sharer.php?u='.$post_url],

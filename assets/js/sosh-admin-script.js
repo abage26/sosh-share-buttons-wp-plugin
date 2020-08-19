@@ -1,4 +1,5 @@
 jQuery(function($){
+    alert('vsfs');
     $("#sosh_btns_checkAll").click(function(){
             console.log('#sosh_btns_checkAll');
             $('#sosh_btns_checklist').find('input:checkbox').not(this).prop('checked', this.checked);
